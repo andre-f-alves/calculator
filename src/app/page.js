@@ -14,7 +14,7 @@ const Screen = ({ value, result }) => {
 
 const ButtonCalc = ({ label, fnOnClick, especialId='' }) => {
   return (
-    <button type='button' id={especialId} className='btn-calc' onClick={fnOnClick}>{label}</button>
+    <button type='button' id={especialId} className='key' onClick={fnOnClick}>{label}</button>
   )
 }
 
@@ -95,13 +95,12 @@ export default function Home() {
 
   const calcKeys = labels.map(label => {
     if (label === 'C') {
-      return <ButtonCalc key={label} label={label} fnOnClick={() => clearMemory()}/>
+      return <ButtonCalc key={label} label={label} fnOnClick={() => clearMemory()} especialId='clear'/>
+    }
 
-    } else if (label === '<') {
-      return <ButtonCalc key={label} label={label} fnOnClick={() => mathOperation('backspace')}/>
-
-    } else if (label === '=') {
-      return <ButtonCalc key={label} label={label} fnOnClick={() => mathOperation('=')} especialId='equal'/>
+    if (label === '<' || label === '=') {
+      const backspaceOrEqual = label === '<' ? 'backspace' : 'equal'
+      return <ButtonCalc key={label} label={label} fnOnClick={() => mathOperation(backspaceOrEqual)} especialId={backspaceOrEqual}/>
     }
 
     return <ButtonCalc key={label} label={label} fnOnClick={() => showDigitOnScreen(label)} especialId={label === '0' ? 'zero' : ''}/>
@@ -109,12 +108,10 @@ export default function Home() {
   
   return (
     <main className='calc'>
-      <div className='container'>
-        <h3>Calculadora</h3>
-        <Screen value={screenValue} result={result}/>
-        <div className='buttons'>
-          {calcKeys}
-        </div>
+      <h1>Calculadora</h1>
+      <Screen value={screenValue} result={result}/>
+      <div className='keyboard'>
+        {calcKeys}
       </div>
     </main>
   )
