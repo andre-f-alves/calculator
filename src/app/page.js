@@ -1,4 +1,5 @@
 "use client"
+import { La_Belle_Aurore } from 'next/font/google'
 import './main-style.css'
 import { useState } from 'react'
 
@@ -12,9 +13,9 @@ const Screen = ({ value, result }) => {
   )
 }
 
-const ButtonCalc = ({ label, fnOnClick, especialId='' }) => {
+const ButtonCalc = ({ children, fnOnClick, especialId='' }) => {
   return (
-    <button type='button' id={especialId} className='key' onClick={fnOnClick}>{label}</button>
+    <button type='button' id={especialId} className='key' onClick={fnOnClick}>{children}</button>
   )
 }
 
@@ -71,8 +72,9 @@ export default function Home() {
       value = value.substring(0, value.length - 1)
       setScreenValue(value)
       setValidators({...validators, isOperated: false})
-      
-    } else {
+    }
+
+    if (operation === 'equal') {
       try {
         let expression = screenValue
   
@@ -80,7 +82,7 @@ export default function Home() {
           expression = expression.substring(0, expression.length - 1)
           setScreenValue(expression)
         }
-        
+
         const operationResult = eval(expression ? expression : 0)
         setResult(operationResult)
         setValidators({...validators, isOperated: true})
@@ -95,15 +97,15 @@ export default function Home() {
 
   const calcKeys = labels.map(label => {
     if (label === 'C') {
-      return <ButtonCalc key={label} label={label} fnOnClick={() => clearMemory()} especialId='clear'/>
+      return <ButtonCalc key={label} fnOnClick={() => clearMemory()} especialId='clear'>{label}</ButtonCalc>
     }
 
     if (label === '<' || label === '=') {
       const backspaceOrEqual = label === '<' ? 'backspace' : 'equal'
-      return <ButtonCalc key={label} label={label} fnOnClick={() => mathOperation(backspaceOrEqual)} especialId={backspaceOrEqual}/>
+      return <ButtonCalc key={label} fnOnClick={() => mathOperation(backspaceOrEqual)} especialId={backspaceOrEqual}>{label === '<' ? <>&larr;</> : label}</ButtonCalc>
     }
 
-    return <ButtonCalc key={label} label={label} fnOnClick={() => showDigitOnScreen(label)} especialId={label === '0' ? 'zero' : ''}/>
+    return <ButtonCalc key={label} fnOnClick={() => showDigitOnScreen(label)} especialId={label === '0' ? 'zero' : ''}>{label === '*' ? <>&times;</> : label === '/' ? <>&divide;</> : label}</ButtonCalc>
   })
   
   return (
